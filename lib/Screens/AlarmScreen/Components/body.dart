@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_field, must_be_immutable
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/AlarmScreen/Components/alarm_helper.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../../../data.dart';
 import 'package:flutter_auth/Screens/AlarmScreen/components/alarm_helper.dart';
 import 'package:flutter_auth/models/alarm_info.dart';
+import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
@@ -23,19 +27,94 @@ class Body extends StatelessWidget {
       appBar: HeaderTab(
         backgroundcolor: headerBackgroundColor,
         title: 'Alarm',
-        press: () {},
+        press: () {
+          showModalBottomSheet(
+            useRootNavigator: true,
+            context: context,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(24),
+              ),
+            ),
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, setModalState) {
+                  return Container(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        FlatButton(
+                          onPressed: () async {
+                            var selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (selectedTime != null) {
+                              final now = DateTime.now();
+                              var selectedDateTime = DateTime(
+                                  now.year,
+                                  now.month,
+                                  now.day,
+                                  selectedTime.hour,
+                                  selectedTime.minute);
+                              // _alarmTime = selectedDateTime;
+                              setModalState(() {
+                                // _alarmTimeString = DateFormat('HH:mm')
+                                //     .format(selectedDateTime);
+                              });
+                            }
+                          },
+                          child: Text(
+                            "00:00",
+                            style: TextStyle(fontSize: 32),
+                          ),
+                        ),
+                        ListTile(
+                          title: Text('Repeat'),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                        ListTile(
+                          title: Text('Sound'),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                        ListTile(
+                          title: Text('Title'),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                        FloatingActionButton.extended(
+                          backgroundColor: darkBackground,
+                          onPressed: () {
+                            scheduleAlarm();
+                            Fluttertoast.showToast(
+                                msg:
+                                    "Wait for 10 Seconds for Notification Test",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor:
+                                    Color.fromARGB(255, 48, 48, 48),
+                                textColor: Colors.white,
+                                fontSize: 15.0);
+                          },
+                          icon: Icon(Icons.alarm),
+                          label: Text('Test Alarm'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          );
+          // scheduleAlarm();
+        },
       ),
       backgroundColor: darkBackground,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'Alarms',
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                color: txtColorLight,
-                fontSize: 30),
-          ),
+          SizedBox(height: 15),
           Expanded(
             child: ListView(
               children: alarms.map((alarm) {

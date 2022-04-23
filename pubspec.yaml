@@ -29,6 +29,8 @@ dependencies:
   flutter_automation: ^2.0.0
   flutter_local_notifications: ^1.4.4+2
   sqflite: ^2.0.2+1
+  intl: ^0.17.0
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

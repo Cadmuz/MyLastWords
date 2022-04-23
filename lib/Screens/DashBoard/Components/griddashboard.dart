@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/AlarmScreen/alarm_screen.dart';
+import 'package:flutter_auth/Screens/GalleryScreen/gallery_screen.dart';
 import 'package:flutter_auth/Screens/NoteScreen/note_screen.dart';
 // import 'package:flutter_auth/Screens/AlarmScreen/gallery_screen.dart';
 // import 'package:flutter_auth/Screens/AlarmScreen/settings_screen.dart';
@@ -56,6 +57,15 @@ class GridDashBoard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) {
                           return NoteScreen();
+                        },
+                      ),
+                    );
+                  } else if (data.id == 3) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return GalleryScreen();
                         },
                       ),
                     );
