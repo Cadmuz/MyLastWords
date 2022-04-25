@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter_auth/models/alarm_info.dart';
 import 'package:sqflite/sqflite.dart';
 
