@@ -27,13 +27,13 @@ class Body extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      "Brayle Bautista",
+                      "Tony Stark",
                       style: TextStyle(color: txtColorLight, fontSize: 25),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: size.height * 0.01),
                     Text(
-                      "Developer",
+                      "Ironman",
                       style: TextStyle(color: txtColorLight, fontSize: 13),
                       textAlign: TextAlign.center,
                     ),

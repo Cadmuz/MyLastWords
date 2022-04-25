@@ -17,6 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class Body extends StatelessWidget {
   const Body({
+    
     Key? key,
   }) : super(key: key);
 
@@ -110,19 +111,20 @@ class Body extends StatelessWidget {
           // scheduleAlarm();
         },
       ),
+      
       backgroundColor: darkBackground,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: 15),
+          SizedBox(height: 30),
           Expanded(
             child: ListView(
               children: alarms.map((alarm) {
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: 12, left: 25, right: 25),
                   padding: EdgeInsets.symmetric(
                     horizontal: 30,
-                  ),
+                  ),                  
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [kPrimaryLightColor, lightBackground],
