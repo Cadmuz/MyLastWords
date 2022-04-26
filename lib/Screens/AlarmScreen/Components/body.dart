@@ -27,13 +27,22 @@ class _BodyState extends State<Body> {
   DateTime? _alarmTime;
   String? _alarmTimeString;
   AlarmHelper _alarmHelper = AlarmHelper();
+  Future<List<AlarmInfo>>? _alarms;
 
   @override
   void initState() {
     _alarmTime = DateTime.now();
-    _alarmHelper.initializaDatabase().then((value) => print("working"));
+    _alarmHelper.initializaDatabase().then((value) {
+      print("Connected to Database");
+      loadAlarms();
+    });
     _alarmTimeString ??= DateFormat('HH:mm').format(DateTime.now());
     super.initState();
+  }
+
+  void loadAlarms() {
+    _alarms = _alarmHelper.getAlarms();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -109,22 +118,24 @@ class _BodyState extends State<Body> {
                                   _alarmTime!.add(Duration(days: 1));
 
                             var alarmInfo = AlarmInfo(
-                                id: 0,
+                                id: 6,
                                 title: 'alarm',
                                 alarmDateTime: scheduleAlarmDateTime,
-                                isPending: true);
+                                alarmOnOff: true);
 
-                            // scheduleAlarm();
-                            // Fluttertoast.showToast(
-                            //     msg:
-                            //         "Wait for 10 Seconds for Notification Test",
-                            //     toastLength: Toast.LENGTH_SHORT,
-                            //     gravity: ToastGravity.CENTER,
-                            //     timeInSecForIosWeb: 1,
-                            //     backgroundColor:
-                            //         Color.fromARGB(255, 48, 48, 48),
-                            //     textColor: Colors.white,
-                            //     fontSize: 15.0);
+                            // _alarmHelper.insertAlarm(alarmInfo);
+
+                            scheduleAlarm();
+                            Fluttertoast.showToast(
+                                msg:
+                                    "Wait for 10 Seconds for Notification Test",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor:
+                                    Color.fromARGB(255, 48, 48, 48),
+                                textColor: Colors.white,
+                                fontSize: 15.0);
                           },
                           icon: Icon(Icons.alarm),
                           label: Text('Test Alarm'),
@@ -145,81 +156,94 @@ class _BodyState extends State<Body> {
         children: <Widget>[
           SizedBox(height: 30),
           Expanded(
-            child: ListView(
-              children: alarms.map((alarm) {
-                return Container(
-                  margin:
-                      const EdgeInsets.only(bottom: 12, left: 25, right: 25),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 30,
-                  ),
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [kPrimaryLightColor, lightBackground],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      boxShadow: [],
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.label,
-                                color: txtColorDark,
-                                size: 24,
-                              ),
-                              SizedBox(width: 8),
-                              Text(
-                                'Office',
-                                style: TextStyle(
-                                  color: txtColorDark,
-                                  fontSize: 20,
+            child: FutureBuilder(
+              future: _alarms,
+              builder: (context, snapshot) {
+                if (snapshot.hasData)
+                  return ListView(
+                    children: alarms.map<Widget>((alarm) {
+                      var alarmTime =
+                          DateFormat('hh:mm aa').format(alarm.alarmDateTime);
+                      return Container(
+                        margin: const EdgeInsets.only(
+                            bottom: 12, left: 25, right: 25),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 30,
+                        ),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [kPrimaryLightColor, lightBackground],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            boxShadow: [],
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.label,
+                                      color: txtColorDark,
+                                      size: 24,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text(
+                                      'Office',
+                                      style: TextStyle(
+                                        color: txtColorDark,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
-                          Switch(
-                              onChanged: (bool value) {},
-                              value: true,
-                              activeColor: txtColorDark),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            'Monday to Friday',
-                            style: TextStyle(
-                                color: txtColorDark,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            '07:00 AM',
-                            style: TextStyle(
-                                color: txtColorDark,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 35,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                                Switch(
+                                    onChanged: (bool value) {},
+                                    value: true,
+                                    activeColor: txtColorDark),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'Monday to Friday',
+                                  style: TextStyle(
+                                      color: txtColorDark,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  alarmTime,
+                                  style: TextStyle(
+                                      color: txtColorDark,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_down,
+                                  size: 35,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  );
+                return Text(
+                  "Loading",
+                  style: TextStyle(color: Colors.white),
                 );
-              }).toList(),
+              },
             ),
           ),
         ],
